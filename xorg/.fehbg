@@ -1,0 +1,2 @@
+#!/bin/sh
+feh --no-fehbg --bg-fill $HOME/Wallpapers/waves-wallpaper-2560×1440.jpg
