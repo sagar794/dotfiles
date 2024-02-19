@@ -3,7 +3,7 @@
 #
 
 export PATH=$PATH:$HOME/bin
-export EDITOR=v
+export EDITOR=nvim
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
