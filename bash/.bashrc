@@ -2,7 +2,6 @@
 # ~/.bashrc
 #
 
-export PATH=$PATH:$HOME/bin
 export EDITOR=nvim
 
 # If not running interactively, don't do anything
