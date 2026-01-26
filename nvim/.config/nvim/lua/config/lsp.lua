@@ -11,7 +11,9 @@ vim.lsp.enable({
 
 -- Truncate diagnostic messages over 100 characters in virtual text
 vim.diagnostic.config({
+  signs = false,
   virtual_text = {
+    prefix = '⚫',
     format = function(diagnostic)
       local max_width = 100
       local message = diagnostic.message:gsub("\n", " ")
