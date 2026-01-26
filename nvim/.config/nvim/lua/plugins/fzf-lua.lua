@@ -3,6 +3,10 @@ return {
   dependencies = { "nvim-tree/nvim-web-devicons" },
   event = "VeryLazy",
   opts = {
+    defaults = {
+      git_icons = false,
+      file_icons = false,
+    },
     keymap = {
       builtin = {
         ["<C-d>"] = "preview-page-down",

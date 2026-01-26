@@ -14,7 +14,7 @@ return {
     jump = {
       jumplist = true,
       pos = "start",
-      autojump = false,
+      autojump = true,
     },
 
     label = {
