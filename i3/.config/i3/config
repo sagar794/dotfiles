@@ -33,12 +33,12 @@ exec --no-startup-id nm-applet
 # assign applications to specific workspaces
 # pro-tip: use `xprop` to identify the class of a window by checking out the second value of the `WM_CLASS` property
 assign [class="firefox"] 1
-assign [class="URxvt"] 2
+assign [class="org.wezfurlong.wezterm"] 2
 assign [class="steam"] 3
 
 # start applications at startup
 exec firefox
-exec urxvt
+exec wezterm
 exec steam
 
 # Use pactl to adjust volume in PulseAudio.
@@ -61,7 +61,7 @@ bindsym $mod+g exec steam
 bindsym $mod+b exec firefox
 
 # start a terminal
-bindsym $mod+Return exec urxvt
+bindsym $mod+Return exec wezterm
 
 # open PulseAudio
 bindsym $mod+p exec pavucontrol
