@@ -59,7 +59,29 @@ config.keys = {
 
 	-- Pane management
 	{ key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
-	{ key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
+	{ key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = false }) },
+
+	-- Claude Code (opens in pane, zoomed)
+	{
+		key = "c",
+		mods = "LEADER",
+		action = wezterm.action_callback(function(window, pane)
+			local wrapper = wezterm.config_dir .. "/claude-wrapper.sh"
+			local new_pane = pane:split({ direction = "Right", args = { wrapper, "--continue" } })
+			new_pane:activate()
+			window:perform_action(act.SetPaneZoomState(true), new_pane)
+		end),
+	},
+	{
+		key = "C",
+		mods = "LEADER|SHIFT",
+		action = wezterm.action_callback(function(window, pane)
+			local wrapper = wezterm.config_dir .. "/claude-wrapper.sh"
+			local new_pane = pane:split({ direction = "Right", args = { wrapper } })
+			new_pane:activate()
+			window:perform_action(act.SetPaneZoomState(true), new_pane)
+		end),
+	},
 
 	-- Tab management
 	{ key = "t", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
