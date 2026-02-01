@@ -3,9 +3,13 @@ local config = wezterm.config_builder()
 
 config.audible_bell = "Disabled"
 config.color_scheme = "iceberg-dark"
-config.font = wezterm.font("Iosevka Term")
+config.font = wezterm.font("IosevkaTerm Nerd Font")
 config.font_size = 17
-config.hide_tab_bar_if_only_one_tab = true
+config.use_fancy_tab_bar = false
+config.show_tabs_in_tab_bar = false
+config.show_new_tab_button_in_tab_bar = false
+config.tab_bar_at_bottom = false
+config.status_update_interval = 1000
 config.scrollback_lines = 10000
 config.window_decorations = "RESIZE"
 config.window_padding = { left = 64, right = 64, top = 64, bottom = 64 }
@@ -85,6 +89,52 @@ config.keys = {
 	{ key = "t", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
 	{ key = "[", mods = "LEADER", action = act.ActivateTabRelative(-1) },
 	{ key = "]", mods = "LEADER", action = act.ActivateTabRelative(1) },
+
+	-- Workspaces (like tmux sessions)
+	{
+		key = "w",
+		mods = "LEADER",
+		action = wezterm.action_callback(function(window, pane)
+			local workspaces = wezterm.mux.get_workspace_names()
+			local current = wezterm.mux.get_active_workspace()
+
+			local choices = {}
+			for _, name in ipairs(workspaces) do
+				local label = name
+				if name == current then
+					label = name .. " (current)"
+				end
+				table.insert(choices, { id = name, label = label })
+			end
+			table.insert(choices, { id = "__new__", label = "+ Create new workspace" })
+
+			window:perform_action(
+				act.InputSelector({
+					title = "Workspaces",
+					choices = choices,
+					fuzzy = true,
+					action = wezterm.action_callback(function(win, p, id, _)
+						if id == "__new__" then
+							win:perform_action(
+								act.PromptInputLine({
+									description = "Enter name for new workspace",
+									action = wezterm.action_callback(function(w, pp, line)
+										if line and line ~= "" then
+											w:perform_action(act.SwitchToWorkspace({ name = line }), pp)
+										end
+									end),
+								}),
+								p
+							)
+						elseif id then
+							win:perform_action(act.SwitchToWorkspace({ name = id }), p)
+						end
+					end),
+				}),
+				pane
+			)
+		end),
+	},
 }
 
 config.key_tables = {
@@ -98,5 +148,39 @@ config.key_tables = {
 		{ key = "Enter", action = "PopKeyTable" },
 	},
 }
+
+-- Iceberg colors
+local colors = {
+	bg = "#161821",
+	fg = "#c6c8d1",
+	blue = "#84a0c6",
+	green = "#b4be82",
+	purple = "#a093c7",
+	red = "#e27878",
+	orange = "#e2a478",
+	dark = "#0f1117",
+}
+
+config.colors = {
+	tab_bar = {
+		background = colors.bg,
+	},
+}
+
+-- Status bar (powerline style)
+wezterm.on("update-status", function(window, pane)
+	local workspace = window:active_workspace()
+
+	window:set_left_status("")
+
+	window:set_right_status(wezterm.format({
+		{ Background = { Color = colors.bg } },
+		{ Foreground = { Color = colors.purple } },
+		{ Text = "\u{e0b2}" },
+		{ Background = { Color = colors.purple } },
+		{ Foreground = { Color = colors.dark } },
+		{ Text = " " .. workspace .. " " },
+	}))
+end)
 
 return config
