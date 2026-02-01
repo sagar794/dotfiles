@@ -70,7 +70,7 @@ config.keys = {
 		key = "c",
 		mods = "LEADER",
 		action = wezterm.action_callback(function(window, pane)
-			local new_pane = pane:split({ direction = "Right", args = { "claude", "--continue" } })
+			local new_pane = pane:split({ direction = "Right", args = { "sh", "-c", "claude --continue || claude" } })
 			new_pane:activate()
 			window:perform_action(act.SetPaneZoomState(true), new_pane)
 		end),
