@@ -66,8 +66,7 @@ config.keys = {
 		key = "c",
 		mods = "LEADER",
 		action = wezterm.action_callback(function(window, pane)
-			local wrapper = wezterm.config_dir .. "/claude-wrapper.sh"
-			local new_pane = pane:split({ direction = "Right", args = { wrapper, "--continue" } })
+			local new_pane = pane:split({ direction = "Right", args = { "claude", "--continue" } })
 			new_pane:activate()
 			window:perform_action(act.SetPaneZoomState(true), new_pane)
 		end),
@@ -76,8 +75,7 @@ config.keys = {
 		key = "C",
 		mods = "LEADER|SHIFT",
 		action = wezterm.action_callback(function(window, pane)
-			local wrapper = wezterm.config_dir .. "/claude-wrapper.sh"
-			local new_pane = pane:split({ direction = "Right", args = { wrapper } })
+			local new_pane = pane:split({ direction = "Right", args = { "claude" } })
 			new_pane:activate()
 			window:perform_action(act.SetPaneZoomState(true), new_pane)
 		end),
