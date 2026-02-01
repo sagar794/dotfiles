@@ -167,20 +167,64 @@ config.colors = {
 	},
 }
 
--- Status bar (powerline style)
+-- Status bar segments: add new segments here
+-- Each segment is a function(window, pane) that returns text (or nil to hide)
+local status_segments = {
+	function(_, pane)
+		local cwd = pane:get_current_working_dir()
+		if not cwd then return nil end
+		local path = cwd.file_path:gsub(wezterm.home_dir, "~")
+		local parts = {}
+		for part in path:gmatch("[^/]+") do
+			table.insert(parts, part)
+		end
+		if #parts > 2 then
+			return ".../" .. parts[#parts - 1] .. "/" .. parts[#parts]
+		end
+		return path
+	end,
+	function(window, _)
+		return window:active_workspace()
+	end,
+}
+
+-- Render status bar (powerline style with gradient)
 wezterm.on("update-status", function(window, pane)
-	local workspace = window:active_workspace()
+	local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
 
-	window:set_left_status("")
+	-- Collect non-nil segment values
+	local segments = {}
+	for _, fn in ipairs(status_segments) do
+		local text = fn(window, pane)
+		if text and text ~= "" then
+			table.insert(segments, text)
+		end
+	end
 
-	window:set_right_status(wezterm.format({
-		{ Background = { Color = colors.bg } },
-		{ Foreground = { Color = colors.purple } },
-		{ Text = "\u{e0b2}" },
-		{ Background = { Color = colors.purple } },
-		{ Foreground = { Color = colors.dark } },
-		{ Text = " " .. workspace .. " " },
-	}))
+	if #segments == 0 then return end
+
+	-- Generate gradient colors
+	local bg = wezterm.color.parse(colors.bg)
+	local gradient = wezterm.color.gradient(
+		{ orientation = "Horizontal", colors = { bg:lighten(0.4), bg:lighten(0.2) } },
+		#segments
+	)
+
+	local elements = {}
+	for i, seg in ipairs(segments) do
+		local bg_color = gradient[i]
+		if i == 1 then
+			table.insert(elements, { Background = { Color = colors.bg } })
+		end
+		table.insert(elements, { Foreground = { Color = bg_color } })
+		table.insert(elements, { Text = SOLID_LEFT_ARROW })
+		table.insert(elements, { Background = { Color = bg_color } })
+		table.insert(elements, { Foreground = { Color = colors.fg } })
+		table.insert(elements, { Attribute = { Intensity = "Bold" } })
+		table.insert(elements, { Text = " " .. seg .. " " })
+	end
+
+	window:set_right_status(wezterm.format(elements))
 end)
 
 return config
