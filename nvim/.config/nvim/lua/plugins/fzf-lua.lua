@@ -24,5 +24,6 @@ return {
     { "<leader>fr", function() require("fzf-lua").resume() end, desc = "Resume last search" },
     { "<leader>fb", function() require("fzf-lua").git_branches() end, desc = "Git branches" },
     { "<leader>fc", function() require("fzf-lua").git_commits() end, desc = "Git commits" },
+    { "<leader>?", function() require("fzf-lua").keymaps() end, desc = "Keymaps" },
   },
 }
