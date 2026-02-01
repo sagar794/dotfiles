@@ -12,6 +12,10 @@ return {
         ["<C-d>"] = "preview-page-down",
         ["<C-u>"] = "preview-page-up",
       },
+      fzf = {
+        ["ctrl-d"] = "preview-page-down",
+        ["ctrl-u"] = "preview-page-up",
+      },
     },
   },
   keys = {
