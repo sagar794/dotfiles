@@ -9,7 +9,7 @@ config.use_fancy_tab_bar = false
 config.show_tabs_in_tab_bar = false
 config.show_new_tab_button_in_tab_bar = false
 config.tab_bar_at_bottom = false
-config.status_update_interval = 1000
+config.status_update_interval = 5000
 config.scrollback_lines = 10000
 config.window_decorations = "RESIZE"
 config.window_padding = { left = 64, right = 64, top = 64, bottom = 64 }
@@ -190,6 +190,7 @@ local status_segments = {
 
 -- Render status bar (powerline style with gradient)
 wezterm.on("update-status", function(window, pane)
+	-- Right status: powerline segments
 	local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
 
 	-- Collect non-nil segment values
